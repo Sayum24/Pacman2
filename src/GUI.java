@@ -8,7 +8,10 @@ public class GUI {
     private PlayingField playingField;
     private WonLostInformationWindow informationWindow;
 
-
+    /**
+     * Fenster werden geladen
+     * @param pTitle
+     */
     public GUI(String pTitle) {
 
         int scalingFactor = 40;

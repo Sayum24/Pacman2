@@ -5,6 +5,9 @@ import java.awt.Label;
 
 import javax.swing.JPanel;
 
+/**
+ * Leiste von Informationen
+ */
 public class WonLostInformationWindow extends JPanel {
 
     private Label jLabelWonLost;
@@ -21,9 +24,15 @@ public class WonLostInformationWindow extends JPanel {
     private static final String GAME_WON_STRING = "Spiel gewonnen!";
     private static final String GAME_LOST_STRING = "Spiel verloren.";
 
-    private final String pointInformationString = "Punktestand";
+    private final String pointInformationString = "Punktestand: ";
 
+    private final String lifeInforamtionString = "Leben: ";
 
+    /**
+     * Konstruktor
+     * @param height
+     * @param width
+     */
     public WonLostInformationWindow(int height, int width) {
         this.height = height * 300;
         this.width = width;
@@ -48,22 +57,32 @@ public class WonLostInformationWindow extends JPanel {
 
         this.setBackground(Color.BLACK);
 
-        jLabelWonLost.setText("                HELLO               ");
+        jLabelWonLost.setText("                               ");
 
 
     }
 
-
+    /**
+     *
+     * @param pPointNumber neue Punktzahl
+     */
     public void setPoint(int pPointNumber) {
-        jLabelPoints.setText(pointInformationString + ": " + String.valueOf(pPointNumber));
+        jLabelPoints.setText(pointInformationString + String.valueOf(pPointNumber));
 
     }
 
+    /**
+     *
+     * @param pLifeNumber Anzahl Leben
+     */
     public void setLifeCounter(int pLifeNumber) {
-        jLabelLifeCounter.setText(String.valueOf(pLifeNumber));
+        jLabelLifeCounter.setText(lifeInforamtionString + String.valueOf(pLifeNumber));
     }
 
-
+    /**
+     * text ob verloren oder gewonnen
+     * @param pGameWonLost Konstante ob verloren oder gewonnen
+     */
     public void setWonLostText(int pGameWonLost) {
 
         switch (pGameWonLost) {
