@@ -23,10 +23,10 @@ public class MusicLoader {
 
     public void load(){
 
-        deathSound1 = new File("resources/res/Pac-ManDeathSound1.wav");
-        deathSound2 = new File("resources/res/Pac-ManDeathSound2.wav");
+        deathSound1 = new File("res/Pac-ManDeathSound1.wav");
+        deathSound2 = new File("res/Pac-ManDeathSound2.wav");
 
-        gameWonSound = new File("resources/res/PacManwon_sound.wav");
+        gameWonSound = new File("res/PacManwon_sound.wav");
 
 
     }
