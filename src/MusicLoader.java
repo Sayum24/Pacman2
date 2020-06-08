@@ -1,5 +1,6 @@
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 import java.io.File;
 
@@ -35,6 +36,8 @@ public class MusicLoader {
 
         try {
             clip = AudioSystem.getClip();
+
+
 
 
             switch (soundMode){

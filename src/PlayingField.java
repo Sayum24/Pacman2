@@ -106,6 +106,7 @@ public class PlayingField extends JPanel {
         musicLoader = new MusicLoader();
         musicLoader.load();
 
+
         // hier werden die Mauern gesetzt
 
         setWallOnField();
@@ -724,6 +725,7 @@ public class PlayingField extends JPanel {
         if (pacManPunkteStand > 262) {
             informationWindow.setWonLostText(WonLostInformationWindow.GAME_WON);
             moveTimer.stop();
+            musicLoader.play(MusicLoader.PAC_MAN_WON);
         }
     }
 
