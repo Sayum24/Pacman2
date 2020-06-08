@@ -5,6 +5,9 @@ import java.util.TimerTask;
 
 import javax.swing.*;
 
+/**
+ * das ganze Spielfeld/GUI wird hier verwaltet
+ */
 public class PlayingField extends JPanel {
 
     private int width;
@@ -14,53 +17,38 @@ public class PlayingField extends JPanel {
 
     private WonLostInformationWindow informationWindow;
 
-    private GameObject player1;
+    private GameObject player1; //pacMan / also Spieler
 
-    private GameObject powerPellet[];
+    private GameObject[] powerPellet; //kraftpillen
 
-    private GameObject foodPoints[];
+    private GameObject[] foodPoints;//Fresspunkte
 
-    private TimerTask moveTimerTask;
-
-    private GameObject blackBackGround;
+    private GameObject blackBackGround; //schwarzer Hintergrund
 
     private int pacManAnzahlLeben;
 
     private int pacManPunkteStand;
 
-    private GameObject mover1;
-    // private GameObject wall1;
-    private GameObject wall[];
-    private GameObject testObject;
+    private GameObject wall[]; //wände
 
-    private int erstenTicks = 0;
+    private int erstenTicks = 0; //sodass am Anfang nicht alle Geister anfangen sich zu bewegen
 
-    private Timer vulnerableTimer;
-    private int vulnerableTimeLeft = 0;
-    private final static int VULNERABLE_TIME = 30;//eigentlich
+    private Timer vulnerableTimer; //Timer für die Zeit wie lange PacMan unverwundbar ist
+    private int vulnerableTimeLeft = 0; //sekunden bis PacMan wieder verwundbar ist
 
+    private final static int VULNERABLE_TIME = 30;//wie lange PacMan unverwundbar ist
 
     private static final int NO_GHOST_IS_TOUCHING = 5;
 
-    private GameObject ghost[];
+    private GameObject ghost[];//geister
 
-    private Timer moveTimer;
+    private Timer moveTimer; //timer für die Ticks wenn sich alles bewegt
 
     private Boolean gameStarted;
-    /*
-     * private static final int RIGHT_DIRECTION = 1;
-     *
-     * private final static int LEFT_DIRECTION = 2;
-     *
-     * private final static int UP_DIRECTION = 3;
-     *
-     * private final static int DOWN_DIRECTION = 4;
-     *
-     * private final static int WAIT = 0;
-     */
-    private int moveStep;
 
-    private MusicLoader musicLoader;
+    private int moveStep; //schrittweite
+
+    private MusicLoader musicLoader; //sounds
 
     /**
      * Spielfeld wird initialisiert
@@ -70,6 +58,8 @@ public class PlayingField extends JPanel {
      * @param pScalingFactor Skalierungsfaktor
      */
     public PlayingField(int pWidth, int pHeight, int pScalingFactor, WonLostInformationWindow pInformationWindow) {
+
+
 
         informationWindow = pInformationWindow;
 
@@ -85,37 +75,31 @@ public class PlayingField extends JPanel {
 
         wallWidth = scalingFactor;
 
-        blackBackGround = new GameObject(getWidth(), getHeight());
+        blackBackGround = new GameObject(getWidth(), getHeight()); //schwarzer Hintergrund
 
-        // player1 = new GameObject(11*scalingFactor, 15*scalingFactor, scalingFactor,
-        // scalingFactor, GameObject.PACMAN);
-        // player1.setColor(Color.BLUE);
-        // zum fixxen
-        player1 = new GameObject(11 * scalingFactor, 15 * scalingFactor, scalingFactor, scalingFactor, GameObject.PACMAN);
+        player1 = new GameObject(11 * scalingFactor, 15 * scalingFactor, scalingFactor, scalingFactor, GameObject.PACMAN); //spieler wird auf Spielfeld gesetzt
 
         // mover1 = new GameObject(50, 40, 30, 10, GameObject.TEST_OBJECT);
         // mover1.setColor(Color.BLACK);
 
         // hier werden die powerPellets gesetzt
-
         setPowerPellets();
 
-        initializeInformationWindow();
+
+
+        initializeInformationWindow(); //informationsLeiste wird initialisiert
 
         //sounds
         musicLoader = new MusicLoader();
         musicLoader.load();
 
-
         // hier werden die Mauern gesetzt
-
         setWallOnField();
 
         moveStep = scalingFactor / 2; /// 2; //die weite die er pro Schritt macht
-
         initialiseGhosts();
 
-
+        //Punkte werden auf dem Spielfeld platziert
         setPointsOnField();
 
 
@@ -125,8 +109,7 @@ public class PlayingField extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-
-                // getNextDirection PACMAN
+                // getNextDirection PACMAN | ob man direkt das machen kann was der Spieler auf der Tastatur gedrückt hat
                 switch (player1.getNextDirection()) {
                     case GameObject.WAIT:
 
@@ -164,7 +147,6 @@ public class PlayingField extends JPanel {
 
                 //GHOSTS
                 for (int i = 0; i < ghost.length; i++) {
-                    //TODO wenn Geister auf der Flucht sind -> PacMan ausweichen
 
                     Boolean[] possibleDirections = ghost[i].getPossibleDirections(wall, moveStep, ghost, i);
 
@@ -185,6 +167,11 @@ public class PlayingField extends JPanel {
                     if (yDistanceToPacMan < 0) {
                         yDistanceToPacMan = -yDistanceToPacMan;
                     }
+                    /*
+                    Es wird berechnet ob sich der Geist x oder y von PacMan weiter weg befindet
+                    Je nach dem welches versucht er näher an PacMan heran zu kommen
+                    er kann sich aber nicht umdrehen
+                     */
 
                     Boolean xDistanceFirst = false;
 
@@ -203,14 +190,14 @@ public class PlayingField extends JPanel {
 
                     Boolean alreadyDirectionChanged = false;
 
-                    int mindestAbstandZuPacMan;
+                    int mindestAbstandZuPacMan; //ab wie weit sich ein Geist nicht mehr zu PacMan hin gezogen fühlt
 
                     if (ghost[i].getOnline()) {
                         mindestAbstandZuPacMan = 4;
                     } else {
                         mindestAbstandZuPacMan = 2;
                     }
-//TODO https://youtu.be/ataGotQ7ir8
+//TODO https://youtu.be/ataGotQ7ir8 wie sich Geister bei PacMan verhalten
 
                     //finde herraus in welche Richtung man gehen sollte um in PacMans naehe zu kommen
                     if (xDistanceFirst) {
@@ -278,9 +265,14 @@ public class PlayingField extends JPanel {
                     }
                 }
                 doAction();
+                //Aktionen werden nun Ausgeführt
             }
         });
 
+        //Eingaben vom Spieler werden hier verarbeitet
+        /*
+        zuerst wird die Richtung in PacMans nextDirection gespeichert - sobald pacMan in diese Richtung kann geht er in die Richtung
+         */
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -308,11 +300,10 @@ public class PlayingField extends JPanel {
                         break;
 
                 }
-
             }
         });
 
-
+        //timer wie lange PacMan unverwundbar ist
         vulnerableTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -330,21 +321,21 @@ public class PlayingField extends JPanel {
             }
         });
 
-
         setFocusable(true);
 
         requestFocusInWindow();
 
     }
 
+    /**
+     * wenn eine zufällige neue Richtung für einen Geist gewählt werden muss
+     *
+     * @param ghostNumber nummer im Geist Array
+     */
     private void findNewDirectionForGhost(int ghostNumber) {
-        //Boolean[] notPossibleDirections = new Boolean [4];
-        //notPossibleDirections = ghost[ghostNumber].getNotDirections(wall, moveStep);
 
-        //ghost[ghostNumber].setCurrentDirection(ghost[ghostNumber].getRandomDirectionForGhost(wall, moveStep));
         ghost[ghostNumber].setCurrentDirection(ghost[ghostNumber].getRandomDirectionForGhost(wall, moveStep, ghost, ghostNumber));
 
-        System.out.println("Das ist es muuuh:  " + ghost[ghostNumber].getCurrentDirection());
     }
 
     public Dimension getPreferredSize() {
@@ -354,6 +345,12 @@ public class PlayingField extends JPanel {
         return new Dimension(width, height);
     }
 
+    /**
+     * currentDirection wird gesetzt
+     *
+     * @param pGO        GameObject
+     * @param pDirection Richtung
+     */
     private void setCurrentDirectionToGameObject(GameObject pGO, int pDirection) {
         pGO.setCurrentDirection(pDirection);
 
@@ -361,6 +358,9 @@ public class PlayingField extends JPanel {
 
     }
 
+    /**
+     * spielstart wird hier überprüft
+     */
     private void startTimer() {
         if (!gameStarted) {
             moveTimer.start();
@@ -372,48 +372,11 @@ public class PlayingField extends JPanel {
             ghost[2].setCurrentDirection(GameObject.RIGHT_DIRECTION);
 
         }
-
     }
 
-
-    //TEST NEUE ENTSCHEIDUNG VON GHOSTS-----------------------------------------------------------------------------------------------------------------------------------
-
-    private void findDirectionForGhost(int ghostNumber) {
-
-        Boolean[] possibleDirections = ghost[ghostNumber].getPossibleDirections(wall, moveStep, ghost, ghostNumber);
-
-        //Lokalisiere PacMan
-        int pacManX = player1.getX();
-        int pacManY = player1.getY();
-
-        int ghostX = ghost[ghostNumber].getX();
-        int ghostY = ghost[ghostNumber].getY();
-
-        int xDistanceToPacMan = ghostX - pacManX;
-
-        int yDistanceToPacMan = ghostY - pacManY;
-
-        if (xDistanceToPacMan < 0) {
-            xDistanceToPacMan = -xDistanceToPacMan;
-        }
-        if (yDistanceToPacMan < 0) {
-            yDistanceToPacMan = -yDistanceToPacMan;
-        }
-
-        if (ghost[ghostNumber].getOnline()) {
-
-
-            if (possibleDirections[GameObject.UP_DIRECTION]) {
-                Math.sqrt(Math.pow(xDistanceToPacMan, 2) + Math.pow(yDistanceToPacMan, 2));//TODO array List? https://youtu.be/ataGotQ7ir8?t=169
-            }
-
-
-        }
-
-
-    }
-
-
+    /**
+     * Timer wird gestartet (/verlängert) wie lange PacMan noch unverwundbar ist
+     */
     private void startTimerGhostVulnerable() {
         if (vulnerableTimeLeft == 0) {
             vulnerableTimeLeft = vulnerableTimeLeft + VULNERABLE_TIME;
@@ -427,6 +390,14 @@ public class PlayingField extends JPanel {
         }
     }
 
+    /**
+     * @param ghostNumber
+     * @param ghostX
+     * @param pacManX
+     * @param possibleDirections
+     * @param mindestAbstandZuPacMan
+     * @return es wird überprüft in welche Richtung sich ein Geist am besten bewegt auf X
+     */
     private Boolean ghostCheckMoveX(int ghostNumber, int ghostX, int pacManX, Boolean[] possibleDirections, int mindestAbstandZuPacMan) {
 
         Boolean alreadyDirectionChanged = false;
@@ -470,6 +441,14 @@ public class PlayingField extends JPanel {
         return alreadyDirectionChanged;
     }
 
+    /**
+     * @param ghostNumber
+     * @param ghostY
+     * @param pacManY
+     * @param possibleDirections
+     * @param mindestAbstandZuPacMan
+     * @return es wird überprüft in welche Richtung sich ein Geist am besten bewegt auf Y
+     */
     private Boolean ghostCheckMoveY(int ghostNumber, int ghostY, int pacManY, Boolean[] possibleDirections, int mindestAbstandZuPacMan) {
 
         Boolean alreadyDirectionChanged = false;
@@ -511,15 +490,22 @@ public class PlayingField extends JPanel {
         return alreadyDirectionChanged;
     }
 
+    /**
+     * informationen leiste wird initialisiert
+     */
     private void initializeInformationWindow() {
         informationWindow.setLifeCounter(pacManAnzahlLeben);
         informationWindow.setPoint(0);
 
     }
 
-
+    /**
+     * Aktionen werden ausgeführt
+     */
     private void doAction() {
 
+
+        //überprüfen ob sich PacMan in die Richtung weiterbewegen kann.
         // getCurrentDirection
         switch (player1.getCurrentDirection()) {
             case GameObject.RIGHT_DIRECTION:
@@ -550,6 +536,7 @@ public class PlayingField extends JPanel {
                 }
 
                 player1.move(-moveStep, 0);
+                System.out.println("8856995");
                 break;
 
             case GameObject.UP_DIRECTION:
@@ -583,6 +570,8 @@ public class PlayingField extends JPanel {
 
 
         for (int i = 0; i < erstenTicks; i++) {
+
+            //Geister werden weitergesteuert
             Boolean[] possibleDirections = ghost[i].getPossibleDirections(wall, moveStep, ghost, i);
             switch (ghost[i].getCurrentDirection()) {
                 case GameObject.WAIT:
@@ -665,16 +654,11 @@ public class PlayingField extends JPanel {
 
         }
         if (erstenTicks < 3) {
+            //sodass nicht alle Geister auf einmal losgehen
             erstenTicks++;
         }
 
-
-//		if(mover1.isTouching(player1) || mover1.isTouching(player2)){
-//			System.out.println("Getroffen!");
-//			timer.stop();
-//		}
-
-
+        //überprüfen ob sich PacMan in einem Fresspunkt/Kraftpille befindet
         if (pacManIsNowInPoint()) {
             informationWindow.setPoint(pacManPunkteStand);
             checkGameWon();
@@ -692,10 +676,9 @@ public class PlayingField extends JPanel {
             pacManAnzahlLeben--;
             if (pacManAnzahlLeben < 1) {
                 informationWindow.setWonLostText(informationWindow.GAME_LOST);
-                musicLoader.play(MusicLoader.PAC_MAN_DEATH);
+                musicLoader.play(MusicLoader.PAC_MAN_DEATH); //Sound wird ausgegeben
                 //TODO wenn Spiel verloren, dann Option, neues Spiel zu spielen
             }
-            //TODO sound ausgeben, wenn PacMan ein Leben verloren hat
 
             informationWindow.setLifeCounter(pacManAnzahlLeben);
             //pacMan wird wieder in die Mitte gesetzt
@@ -715,13 +698,13 @@ public class PlayingField extends JPanel {
             ghost[ghostStatus].setGameObjectToTheBeginningPlace(); //Geist wird wieder auf anfangsPosition gesetzt
         }
 
-
         repaint();
-
     }
 
+    /**
+     * überprüft ob das Spiel gewonnen ist (höchstpunktzahl errreicht ist)
+     */
     private void checkGameWon() {
-
         if (pacManPunkteStand > 262) {
             informationWindow.setWonLostText(WonLostInformationWindow.GAME_WON);
             moveTimer.stop();
@@ -730,14 +713,12 @@ public class PlayingField extends JPanel {
     }
 
 
-    /*
+    /**
      * fragt ob sich pacMan in einem Geist befindet
      *
      */
     private Boolean pacManIsNowInGhostIsOnline() {
-
         for (GameObject gameObject : ghost) {
-
             if (player1.isTouching(gameObject)) {
                 if (gameObject.getOnline()) {
                     System.out.println("PacMan touches Ghost!!");
@@ -748,6 +729,10 @@ public class PlayingField extends JPanel {
         return false;
     }
 
+    /**
+     *
+     * @return ob der unverwundbare PacMan einen Geist berührt
+     */
     private int pacManIsNowInGhostIsOffline() {
         for (int i = 0; i < ghost.length; i++) {
             if (player1.isTouching(ghost[i]) && !ghost[i].getOnline()) {
@@ -781,6 +766,10 @@ public class PlayingField extends JPanel {
         return false;
     }
 
+    /**
+     *
+     * @return ob sich PacMan in Kraftpille befindet
+     */
     private Boolean pacManIsNowInPowerPellet() {
         // wenn PacMan ein PowerPellet ber�hrt
         for (GameObject gameObject : powerPellet) {
@@ -794,11 +783,12 @@ public class PlayingField extends JPanel {
                 }
             }
         }
-
         return false;
     }
 
-
+    /**
+     * Geister werden verwundbar gemacht (pacman ist unverwundbar)
+     */
     private void setGhostsVulnerable() {
         System.out.println("Ghosts are vulnerable");
 
@@ -843,7 +833,6 @@ public class PlayingField extends JPanel {
 
     private void clearBackground(Graphics pG) {
         pG.clearRect(0, 0, width, height);
-
     }
 
     /**
@@ -947,6 +936,9 @@ public class PlayingField extends JPanel {
 
     }
 
+    /**
+     * Method sets Points of the field
+     */
     private void setPointsOnField() {
 
         foodPoints = new GameObject[203];
@@ -1005,8 +997,8 @@ public class PlayingField extends JPanel {
 
     }
 
-    /*
-     * setzt die Pillen auf das Spielfeld
+    /**
+     * Method sets PowerPellets of the field (Kraftpillen)
      */
     private void setPowerPellets() {
 
@@ -1028,6 +1020,9 @@ public class PlayingField extends JPanel {
 
     }
 
+    /**
+     * setzt Geister auf ihre Anfangsposition
+     */
     private void initialiseGhosts() {
         ghost = new GameObject[3];
         ghost[0] = new GameObject(10 * scalingFactor, 9 * scalingFactor, scalingFactor, scalingFactor,
@@ -1038,11 +1033,12 @@ public class PlayingField extends JPanel {
                 GameObject.GHOST);
     }
 
+    //setzt Geister auf ihre Anfangspositionen
     private void setGhosts() {
 
-        ghost[0].setXY(10 * scalingFactor, 9 * scalingFactor);
-        ghost[1].setXY(11 * scalingFactor, 9 * scalingFactor);
-        ghost[2].setXY(12 * scalingFactor, 9 * scalingFactor);
+        ghost[0].setGameObjectToTheBeginningPlace();
+        ghost[1].setGameObjectToTheBeginningPlace();
+        ghost[2].setGameObjectToTheBeginningPlace();
 
         erstenTicks = 0;
     }

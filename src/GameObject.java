@@ -14,7 +14,9 @@ import javax.imageio.ImageIO;
 //
 //import javax.imageio.ImageIO;
 
-
+/**
+ * Klasse GameObject, wird für jedes Objekt verwendet, welches sich auf dem Spielfeld befindet
+ */
 public class GameObject {
 
     private int x;
@@ -64,7 +66,15 @@ public class GameObject {
 
     private int nextDirection;
 
-
+    /**
+     * Konstruktor eines GameObjekts
+     *
+     * @param pX      x-Koordinate
+     * @param pY      y-Koordinate
+     * @param pWidth  länge
+     * @param pHeight höhe
+     * @param pType   typ (Konstante)
+     */
     public GameObject(int pX, int pY, int pWidth, int pHeight, int pType) {
         x = pX;
         y = pY;
@@ -123,7 +133,6 @@ public class GameObject {
                 }
 
                 ghostNumber++;
-
                 break;
 
             case PACMAN:
@@ -137,6 +146,14 @@ public class GameObject {
 
     }
 
+    /**
+     * Konstruktor eines Punktes
+     *
+     * @param pX
+     * @param pY
+     * @param pScale
+     * @param pType
+     */
     public GameObject(int pX, int pY, int pScale, int pType) {
         x = pX + 15;
         y = pY + 15;// TODO 10 ist hier 1/4tel vom scaling factor
@@ -165,6 +182,12 @@ public class GameObject {
         }
     }
 
+    /**
+     * Konstruktor für den schwarzen Hintergrund
+     *
+     * @param pWidth
+     * @param pHeight
+     */
     public GameObject(int pWidth, int pHeight) {// für den schwarzen Hintergrund
 
         x = 0;
@@ -181,25 +204,40 @@ public class GameObject {
 //		this(0, 0, pWidth, pHeight);
 //	}
 
+    /**
+     * @return die aktuelle Richtung in welche sich das Objekt bewegt
+     */
     public int getCurrentDirection() {
         return currentDirection;
     }
 
+    /**
+     * @param pCurrentDirection Richtung in welche sich das Objekt nun bewegen soll
+     */
     public void setCurrentDirection(int pCurrentDirection) {
 
         currentDirection = pCurrentDirection;
 
     }
 
+    /**
+     * @return ob das Objekt online ist (Status bei Geistern/ Punkten)
+     */
     public Boolean getOnline() {
         return online;
     }
 
+    /**
+     * setzt das Objekt zurück auf die Ausganglage
+     */
     public void setGameObjectToTheBeginningPlace() {
         x = beginningX;
         y = beginningY;
     }
 
+    /**
+     * @param pOnline setzt den online Status
+     */
     public void setOnline(Boolean pOnline) {
 
         online = pOnline;
@@ -234,12 +272,17 @@ public class GameObject {
         }
     }
 
+    /**
+     * @return nächste Richtung wird zurückgegeben (bei PacMan)
+     */
     public int getNextDirection() {
         return nextDirection;
     }
 
+    /**
+     * @param pNextDirection nächste Richtung wird gesetzt (bei PacMan)
+     */
     public void setNextDirection(int pNextDirection) {
-
         if (pNextDirection >= 0 || pNextDirection < 5) {
             nextDirection = pNextDirection;
         } else {
@@ -309,6 +352,12 @@ public class GameObject {
         y = pY;
     }
 
+    /**
+     * Objekt wird an die übergebenen Parameter gesetzt
+     *
+     * @param pDX
+     * @param pDY
+     */
     public void move(int pDX, int pDY) {
         x = pDX + x;
         y = pDY + y;
@@ -358,6 +407,11 @@ public class GameObject {
 
     }
 
+    /**
+     * @param pGO
+     * @param pStepWide schrittweite
+     * @return ob das Objekt wenn es einen weiteren Schritt macht oben eines der Übergebenen Objekte berührt
+     */
     public Boolean isTouchingAbove(GameObject[] pGO, int pStepWide) {
 
         int space = pStepWide / 2;
@@ -373,6 +427,11 @@ public class GameObject {
         return false;
     }
 
+    /**
+     * @param pGO
+     * @param pStepWide
+     * @return ob das Objekt wenn es einen weiteren Schritt macht unten eines der Übergebenen Objekte berührt
+     */
     public Boolean isTouchingBelow(GameObject[] pGO, int pStepWide) {
 
         int space = pStepWide / 2;
@@ -388,6 +447,11 @@ public class GameObject {
         return false;
     }
 
+    /**
+     * @param pGO
+     * @param pStepWide
+     * @return ob das Objekt wenn es einen weiteren Schritt macht rechts eines der Übergebenen Objekte berührt
+     */
     public Boolean isTouchingRight(GameObject[] pGO, int pStepWide) {
 
         int space = pStepWide / 2;
@@ -404,7 +468,11 @@ public class GameObject {
         return false;
     }
 
-
+    /**
+     * @param pGO
+     * @param pStepWide
+     * @return ob das Objekt wenn es einen weiteren Schritt macht links eines der Übergebenen Objekte berührt
+     */
     public Boolean isTouchingLeft(GameObject[] pGO, int pStepWide) {
 
         int space = pStepWide / 2;
@@ -422,10 +490,6 @@ public class GameObject {
 
     public void paintTo(Graphics pG) {
 
-//		if (type == PACMAN) {
-//			pG.drawImage(img, 0, 0, this);
-//			
-//		}
 
         pG.setColor(color);
         pG.fillRect(x, y, width, height);
@@ -493,6 +557,13 @@ public class GameObject {
         return possibleDirections;
     }
 
+    /**
+     * @param pWall
+     * @param pStepWide
+     * @param pGhosts
+     * @param pCurrentGhostNumber
+     * @return gibt eine zufällige Richtung für einen Geist zurück (int)
+     */
     public int getRandomDirectionForGhost(GameObject[] pWall, int pStepWide, GameObject[] pGhosts, int pCurrentGhostNumber) {
 
         Boolean[] possibleDirections = getPossibleDirections(pWall, pStepWide, pGhosts, pCurrentGhostNumber);
@@ -528,10 +599,13 @@ public class GameObject {
                 counterWith++;
             }
         }
-        System.out.println("Fehler | Bis hier hin sollte es nicht gehen! 233");//TODO hier ist der Fehler
+        System.out.println("Fehler | Bis hier hin sollte es nicht gehen! 233");
         return WAIT;
     }
 
+    /**
+     * aktuelle Richtung wird umgedreht
+     */
     public void invertCurrentDirection() {
         switch (currentDirection) {
             case UP_DIRECTION:
@@ -552,62 +626,5 @@ public class GameObject {
                 System.out.println("Fehler | Sollte nicht passieren | Keine richtige Direction");
         }
     }
-
-
-    public Boolean isThere(int directionCode, GameObject[] walls, int stepwide) {
-        switch (directionCode) {
-            case UP_DIRECTION:
-                return isTouchingAbove(walls, stepwide);
-
-            case DOWN_DIRECTION:
-                return isTouchingBelow(walls, stepwide);
-
-            case LEFT_DIRECTION:
-                return isTouchingLeft(walls, stepwide);
-
-            case RIGHT_DIRECTION:
-                return isTouchingRight(walls, stepwide);
-
-            default:
-                System.out.println("Fehler | no real directionCode! [Class: GameObject, isthere()]");
-                return true;
-        }
-    }
-
-//	private int getAutoNewDirection(GameObject [] walls, int stepwide) {
-//		
-//		Boolean [] noDirections = getNotDirections(walls, stepwide);
-//		
-//		for (int i = 0; i < noDirections.length; i++) {
-//			if(noDirections[i] = false) {
-//				
-//			}
-//		}
-//		
-//		int [] possibleDirections = new int[4];
-//		
-//		
-//		return null;
-//	}
-
-
-//	switch(randomNumber) {
-//	case UP_DIRECTION:
-//		
-//		break;
-//	case DOWN_DIRECTION:
-//		
-//		break;
-//	case GameObject.LEFT_DIRECTION:
-//		
-//		break;
-//	case GameObject.RIGHT_DIRECTION:
-//		
-//		break;
-//
-//	default:
-//		
-//		break;
-//	}
 
 }

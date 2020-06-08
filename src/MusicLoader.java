@@ -4,6 +4,9 @@ import javax.sound.sampled.FloatControl;
 
 import java.io.File;
 
+/**
+ * alle Sounds werden hier verwaltet
+ */
 public class MusicLoader {
 
     public static final int PAC_MAN_DEATH = 1;
@@ -14,54 +17,46 @@ public class MusicLoader {
 
     private static File gameWonSound;
 
-    private static float volume;
-
     Clip clip;
 
-    public MusicLoader(){
-        volume = 0;
+
+    public MusicLoader() {
+
     }
 
-    public void load(){
-
+    //sounds werden geladen
+    public void load() {
         deathSound1 = new File("res/Pac-ManDeathSound1.wav");
         deathSound2 = new File("res/Pac-ManDeathSound2.wav");
-
         gameWonSound = new File("res/PacManwon_sound.wav");
-
-
     }
 
+    /**
+     * sounds werden abgespielt
+     *
+     * @param soundMode welcher Sound abgespielt werden soll (Konstante)
+     */
     public void play(int soundMode) {
 
         try {
             clip = AudioSystem.getClip();
 
-
-
-
-            switch (soundMode){
+            switch (soundMode) {
                 case PAC_MAN_DEATH:
-
                     clip.open(AudioSystem.getAudioInputStream(deathSound1));
-
-
                     break;
                 case PAC_MAN_WON:
                     clip.open(AudioSystem.getAudioInputStream(gameWonSound));
-
+                    break;
+                default:
+                    System.out.println("Fehler | darf nicht auftreten | MusicLoader: keine richtige Zahl zum Musik abspielen");
                     break;
             }
             clip.start();
 
-
-
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
 
 }
