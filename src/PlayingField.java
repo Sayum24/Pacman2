@@ -678,6 +678,8 @@ public class PlayingField extends JPanel {
                 informationWindow.setWonLostText(informationWindow.GAME_LOST);
                 musicLoader.play(MusicLoader.PAC_MAN_DEATH); //Sound wird ausgegeben
                 //TODO wenn Spiel verloren, dann Option, neues Spiel zu spielen
+            }else{
+                musicLoader.play(MusicLoader.PAC_GHOST);
             }
 
             informationWindow.setLifeCounter(pacManAnzahlLeben);

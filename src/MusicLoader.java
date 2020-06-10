@@ -10,6 +10,7 @@ import java.io.File;
 public class MusicLoader {
 
     public static final int PAC_MAN_DEATH = 1;
+    public static final int PAC_GHOST = 3;
     public static final int PAC_MAN_WON = 2;
 
     private static File deathSound1;
@@ -26,8 +27,8 @@ public class MusicLoader {
 
     //sounds werden geladen
     public void load() {
-        deathSound1 = new File("res/Pac-ManDeathSound1.wav");
-        deathSound2 = new File("res/Pac-ManDeathSound2.wav");
+        deathSound2 = new File("res/Pac-ManDeathSound1.wav");
+        deathSound1 = new File("res/Pac-ManDeathSound2.wav");
         gameWonSound = new File("res/PacManwon_sound.wav");
     }
 
@@ -47,6 +48,9 @@ public class MusicLoader {
                     break;
                 case PAC_MAN_WON:
                     clip.open(AudioSystem.getAudioInputStream(gameWonSound));
+                    break;
+                case PAC_GHOST:
+                    clip.open(AudioSystem.getAudioInputStream(deathSound2));
                     break;
                 default:
                     System.out.println("Fehler | darf nicht auftreten | MusicLoader: keine richtige Zahl zum Musik abspielen");
